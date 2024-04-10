@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biceps and Back Dumbell Workout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        #startCountdown {
+            font-size: 48px;
+            text-align: center;
+            margin-top: 200px;
+            color: #33ff00;
+            display: none;
+            /* Initially hidden */
+            animation: fadeOut 5s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        #startCountdown,
+        #timer,
+        #menu button {
+            font-size: 16px;
+        }
+
+        #timer {
+            font-size: 32px;
+            text-align: center;
+            margin-top: 50px;
+            color: #33ff00;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        #menu {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+
+        #nextWorkout {
+            font-size: 20px;
+            text-align: center;
+            opacity: 0;
+            /* Initially hidden */
+            transition: opacity 0.5s ease-in-out;
+            /* Fade-in transition */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #33ff00;
+        }
+
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .stopButton {
+            background-color: #ff0000;
+            /* Red background color */
+            color: white;
+            /* Text color */
+            border: none;
+            /* No border */
+            padding: 15px 32px;
+            /* Padding */
+            font-size: 16px;
+            /* Font size */
+            border-radius: 12px;
+            /* Rounded corners */
+            margin: 4px 2px;
+            /* Margin */
+            cursor: pointer;
+            /* Cursor style */
+            transition: background-color 0.3s, transform 0.2s;
+            /* Transition effect */
+        }
+
+        .stopButton:hover {
+            background-color: #cc0000;
+            /* Darker red on hover */
+        }
+
+        .stopButton:active {
+            transform: scale(0.95);
+            /* Scale down slightly when clicked */
+        }
+
+        #startText {
+            font-size: 36px;
+            text-align: center;
+            margin-top: 200px;
+            color: #33ff00;
+            animation: pulse 1s infinite alternate;
+        }
+
+        #previousButton,
+        #nextButton,
+        #stopButton,
+        #pauseResumeButton {
+            display: none;
+        }
+
+        #countdown {
+            position: relative;
+            margin: auto;
+            margin-top: 100px;
+            height: 40px;
+            width: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        #countdown-number {
+            color: white;
+            display: inline-block;
+            line-height: 40px;
+            font-size: inherit;
+            /* Reset font size to its initial value */
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            transform: rotateY(-180deg) rotateZ(-90deg);
+            display: none;
+            /* Initially hidden */
+        }
+
+        svg circle {
+            stroke-dasharray: 113px;
+            stroke-dashoffset: 0px;
+            stroke-linecap: round;
+            stroke-width: 2px;
+            stroke: white;
+            fill: none;
+            animation: countdown 30s linear infinite forwards;
+        }
+
+
+        @keyframes countdown {
+            from {
+                stroke-dashoffset: 0px;
+            }
+
+            to {
+                stroke-dashoffset: 113px;
+            }
+        }
+
+        #menu button {
+            flex: 0 0 45%;
+            /* Two buttons per row on smaller screens */
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 style="text-align: center; padding-top: 20px;">Biceps and Back Dumbell Workout</h1>
+    </header>
+
+    <div id="menu">
+        <!-- Previous button -->
+        <button id="previousButton" onclick="skipToPrevious()">Previous</button>
+        <!-- Next button -->
+        <button id="nextButton" onclick="skipToNext()">Next</button>
+        <!-- Start button -->
+        <button id="startButton" onclick="startWorkout()">Start Workout</button>
+        <!-- Pause/Resume button -->
+        <button id="pauseResumeButton" onclick="pauseResumeTimer()">Pause</button>
+        <!-- Stop button -->
+        <button id="stopButton" class="stopButton" onclick="stopWorkout()">Stop Workout</button>
+    </div>
+
+    <div id="startCountdown"></div>
+    <div id="timer"></div>
+    <div id="nextWorkout"></div>
+    <div id="startText">Click Start Workout to Begin!</div>
+
+    <div id="countdown">
+        <div id="countdown-number"></div>
+        <svg>
+            <circle r="18" cx="20" cy="20"></circle>
+        </svg>
+    </div>
+
+
+    <script>
+        const workoutItems = [
+            "SINGLE ARM BENT OVER ROW (RIGHT)",
+            "REST",
+            "SINGLE ARM BENT OVER ROW (LEFT)",
+            "REST",
+            "SINGLE ARM BENT OVER ROW (RIGHT)",
+            "REST",
+            "SINGLE ARM BENT OVER ROW (LEFT)",
+            "REST",
+            "LANDMINE ROW",
+            "REST",
+            "LANDMINE ROW",
+            "REST",
+            "LANDMINE ROW",
+            "REST",
+            "LANDMINE ROW",
+            "REST",
+            "PULLOVER",
+            "REST",
+            "PULLOVER",
+            "REST",
+            "PULLOVER",
+            "REST",
+            "PULLOVER",
+            "REST",
+            "DEADSTOP SINGLE ARM ROW",
+            "REST",
+            "SWITCH SIDE!",
+            "DEADSTOP SINGLE ARM ROW",
+            "REST",
+            "SWITCH SIDE!",
+            "DEADSTOP SINGLE ARM ROW",
+            "REST",
+            "SWITCH SIDE!",
+            "DEADSTOP SINGLE ARM ROW",
+            "REST",
+            "PALMS UP CURL",
+            "REST",
+            "PALMS UP CURL",
+            "REST",
+            "PALMS UP CURL",
+            "REST",
+            "PALMS UP CURL",
+            "REST",
+            "ALTERNATING HAMMER CURLS",
+            "REST",
+            "ALTERNATING HAMMER CURLS",
+            "REST",
+            "ALTERNATING HAMMER CURLS",
+            "REST",
+            "ALTERNATING HAMMER CURLS",
+            "WIDE CURLS",
+            "REST",
+            "WIDE CURLS",
+            "REST",
+            "WIDE CURLS",
+            "REST",
+            "WIDE CURLS"
+        ];
+
+        let currentIndex = 0;
+        let timer;
+        let paused = true;
+        let secondsLeft = 0;
+        let svgCircle;
+        let svgCountdown;
+        let svgCircleTimer;
+
+
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Initialize SVG elements
+            svgCircle = document.querySelector('svg');
+            svgCountdown = document.getElementById('countdown');
+            // Hide SVG circle and countdown initially
+            svgCircle.style.display = 'none';
+            svgCountdown.style.display = 'none';
+        });
+
+        function startWorkout() {
+            const startButton = document.getElementById('startButton');
+            const startText = document.getElementById('startText');
+
+            if (startButton.textContent === 'Start Workout') {
+                startButton.textContent = 'Restart';
+                startButton.style.animation = 'none';
+                startText.style.display = 'none';
+
+                let count = 5;
+                const countdownDiv = document.getElementById('startCountdown');
+                countdownDiv.style.display = 'block'; // Display countdown
+                countdownDiv.textContent = count;
+                const countdownInterval = setInterval(() => {
+                    count--;
+                    countdownDiv.textContent = count;
+                    if (count <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownDiv.style.display = 'none'; // Hide countdown
+                        paused = false; // Start the countdown for workout items
+                        displayCurrentItem(); // Start the workout
+                    }
+                }, 1000);
+            } else if (startButton.textContent === 'Restart') {
+                location.reload();
+            }
+
+            // Show previous, next, stop, and pause buttons
+            document.getElementById('previousButton').style.display = 'inline-block';
+            document.getElementById('nextButton').style.display = 'inline-block';
+            document.getElementById('stopButton').style.display = 'inline-block';
+            document.getElementById('pauseResumeButton').style.display = 'inline-block';
+            //svgCircle.style.display = 'inline';
+            //svgCountdown.style.display = 'inline';
+
+            let count = 5;
+            const countdownDiv = document.getElementById('startCountdown');
+            countdownDiv.style.display = 'block'; // Display initial countdown
+            countdownDiv.textContent = count;
+            const countdownInterval = setInterval(() => {
+                count--;
+                countdownDiv.textContent = count;
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownDiv.style.display = 'none'; // Hide initial countdown
+                    paused = false; // Start the countdown for workout items
+                    displayCurrentItem(); // Start the workout
+                    startSvgCountdown(); // Start the SVG circle countdown
+                }
+            }, 1000);
+
+            console.log('Workout started!');
+        }
+
+        function displayCurrentItem() {
+            const timerDiv = document.getElementById('timer');
+            secondsLeft = 30;
+            timerDiv.textContent = `${workoutItems[currentIndex]}`;
+            if (!paused) {
+                clearInterval(timer);
+                timer = setInterval(countdown, 1000); // 1 second
+            }
+        }
+
+        function countdown() {
+            const timerDiv = document.getElementById('timer');
+            const nextWorkoutDiv = document.getElementById('nextWorkout');
+
+            if (paused || currentIndex >= workoutItems.length) {
+                return; // Exit early if the workout is paused or completed
+            }
+
+            if (secondsLeft > 0) {
+                secondsLeft--;
+                timerDiv.style.fontSize = '32px'; // Dynamic font size change
+
+                if (secondsLeft === 10) {
+                    const nextWorkoutIndex = currentIndex + 1;
+                    if (nextWorkoutIndex < workoutItems.length) {
+                        nextWorkoutDiv.textContent = `Up Next: ${workoutItems[nextWorkoutIndex]}`;
+                        nextWorkoutDiv.style.opacity = '1'; // Ensure the text is visible
+                    }
+                }
+            } else if (currentIndex < workoutItems.length - 1) {
+                currentIndex++;
+                secondsLeft = 30; // Reset the timer
+                nextWorkoutDiv.textContent = ''; // Clear "Up Next" text
+                nextWorkoutDiv.style.opacity = '0'; // Hide "Up Next" text
+                resetSvgCountdown();
+            } else {
+                clearInterval(timer);
+                timerDiv.textContent = "DONE! Great Job.";
+                nextWorkoutDiv.textContent = ''; // Clear "Up Next" text
+                nextWorkoutDiv.style.opacity = '0'; // Hide "Up Next" text
+                stopSvgCountdown();
+                return;
+            }
+            timerDiv.textContent = `${workoutItems[currentIndex]}`;
+        }
+
+
+        function pauseResumeTimer() {
+            paused = !paused;
+            const button = document.getElementById('pauseResumeButton');
+            if (paused) {
+                clearInterval(timer);
+                button.textContent = 'Resume';
+            } else {
+                button.textContent = 'Pause';
+                timer = setInterval(countdown, 1000); // Start or resume countdown
+                clearInterval(timer);
+                resetSvgCountdown();
+
+            }
+
+            if (paused) {
+                svgCircle.style.display = 'none'; // Hide SVG circle when paused
+                svgCountdown.style.display = 'none'; // Hide SVG countdown when paused
+            } else {
+                //svgCircle.style.display = 'inline'; // Show SVG circle when resumed
+                //svgCountdown.style.display = 'inline'; // Show SVG countdown when resumed
+                resetSvgCountdown();
+                displayCurrentItem();
+            }
+        }
+
+        function skipToNext() {
+            if (currentIndex < workoutItems.length - 1) {
+                currentIndex++;
+                clearInterval(timer);
+                resetSvgCountdown(); // Reset the SVG countdown
+                displayCurrentItem();
+            }
+        }
+
+        function skipToPrevious() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                clearInterval(timer);
+                resetSvgCountdown(); // Reset the SVG countdown
+                displayCurrentItem();
+            }
+        }
+
+        function stopWorkout() {
+
+            //svgCircle.style.display = 'none';
+            // svgCountdown.style.display = 'none';
+
+            stopSvgCountdown();
+
+            if (!paused && currentIndex < workoutItems.length) {
+                paused = true;
+                currentIndex = 0;
+                const timerDiv = document.getElementById('timer');
+                timerDiv.textContent = '';
+                const nextWorkoutDiv = document.getElementById('nextWorkout');
+                nextWorkoutDiv.textContent = '';
+                const startButton = document.getElementById('startButton');
+                startButton.textContent = 'Start Workout';
+                const startText = document.getElementById('startText');
+                startText.style.display = 'block'; // Display "Click start to begin" text
+                startButton.style.animation = 'pulse 1s infinite alternate'; // Add pulse animation to start button
+
+                document.getElementById('previousButton').style.display = 'none';
+                document.getElementById('nextButton').style.display = 'none';
+                document.getElementById('stopButton').style.display = 'none';
+                document.getElementById('pauseResumeButton').style.display = 'none';
+
+
+            }
+
+
+        }
+
+        svgCircle = document.querySelector('svg');
+        svgCountdown = document.getElementById('countdown');
+
+        function startSvgCountdown() {
+            // Clear existing timer if it exists
+            if (svgCircleTimer) {
+                clearInterval(svgCircleTimer);
+            }
+
+            // Show the SVG circle and countdown
+            svgCircle.style.display = 'block';
+            svgCountdown.style.display = 'block';
+
+            let countdown = 30;
+            const countdownNumberEl = document.getElementById('countdown-number');
+            countdownNumberEl.textContent = countdown;
+
+            // Function to decrement the countdown and handle reset
+            function decrementCountdown() {
+                countdown--;
+                countdownNumberEl.textContent = countdown;
+                if (countdown < 0) {
+                    clearInterval(svgCircleTimer);
+                    countdown = 30; // Reset the countdown value to 30
+                    countdownNumberEl.textContent = countdown;
+                    startSvgCountdown(); // Restart the countdown
+                }
+            }
+
+            // Start the countdown for the SVG circle
+            svgCircleTimer = setInterval(decrementCountdown, 1000);
+        }
+
+
+
+        function resetSvgCountdown() {
+            clearInterval(svgCircleTimer); // Clear the countdown timer
+
+            // Reset countdown numbers
+            const countdownNumberEl = document.getElementById('countdown-number');
+            countdownNumberEl.textContent = '30'; // Reset countdown number
+
+            // Remove the existing SVG circle element from the DOM
+            const circleElement = document.querySelector('svg circle');
+            const svgElement = document.querySelector('svg');
+            svgElement.removeChild(circleElement);
+
+            // Re-add the SVG circle element to the DOM (this will effectively reset it)
+            const newCircleElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            newCircleElement.setAttribute("r", "18");
+            newCircleElement.setAttribute("cx", "20");
+            newCircleElement.setAttribute("cy", "20");
+            newCircleElement.style.strokeDasharray = "113px";
+            newCircleElement.style.strokeDashoffset = "0px";
+            newCircleElement.style.strokeLinecap = "round";
+            newCircleElement.style.strokeWidth = "2px";
+            newCircleElement.style.stroke = "white";
+            newCircleElement.style.fill = "none";
+            svgElement.appendChild(newCircleElement);
+
+            // Restart the countdown for the SVG circle
+            startSvgCountdown();
+        }
+
+        function stopSvgCountdown() {
+            if (svgCircleTimer !== null) {
+                clearInterval(svgCircleTimer); // Clear the countdown timer
+                svgCircle.style.display = 'none'; // Hide the SVG circle
+                svgCountdown.style.display = 'none'; // Hide the countdown container
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

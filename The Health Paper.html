@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Health Paper</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+  }
+  header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  header h1 {
+  font-family: "Times New Roman", Times, serif;
+}
+
+  nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #555; 
+  padding: 10px 20px;
+  border-radius: 5px; 
+  background-color: #f7f7f7; 
+  border: 2px solid #555; 
+  transition: background-color 0.3s, color 0.3s; 
+}
+
+nav ul li a:hover {
+  background-color: #555; 
+  color: #fff; 
+}
+
+
+  section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease; 
+    transform: translateY(-50px); 
+  }
+  section.fade-in {
+    opacity: 1;
+    transform: translateY(0); 
+  }
+  section div {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s; 
+  }
+  section div:hover {
+    transform: scale(1.05); 
+  }
+  section div:nth-child(even) {
+    background-color: #fefefe;
+  }
+  footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 999; 
+  }
+  main {
+    padding-top: 30px;
+    padding-bottom: 70px; 
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>The Health Paper</h1>
+
+ <!-- SEO Tags -->
+  <meta name="description" content="This is a newspaper-style website showcasing various sections with articles and summaries.">
+  <meta name="keywords" content="newspaper, website, articles, summaries, news">
+  <meta name="author" content="Edward Lafontant">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#333"> 
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.example.com/">
+  <meta property="og:title" content="Newspaper Website">
+  <meta property="og:description" content="This is a newspaper-style website showcasing various sections with articles and summaries.">
+  <meta property="og:image" content="https://www.example.com/image.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.example.com/">
+  <meta property="twitter:title" content="Newspaper Website">
+  <meta property="twitter:description" content="This is a newspaper-style website showcasing various sections with articles and summaries.">
+  <meta property="twitter:image" content="https://www.example.com/image.jpg">
+
+</header>
+<nav>
+  <ul>
+    <li><a href="#section1">Menu Item 1</a></li>
+    <li><a href="#section2">Menu Item 2</a></li>
+    <li><a href="#section3">Menu Item 3</a></li>
+    <li><a href="#section4">Menu Item 4</a></li>
+  </ul>
+</nav>
+<main>
+<section id="section1" class="fade-in">
+  <div id="content1"></div>
+  <div id="content2"></div>
+</section>
+<section id="section2">
+  <div id="content3"></div>
+  <div id="content4"></div>
+</section>
+<section id="section3">
+  <div id="content5"></div>
+  <div id="content6"></div>
+</section>
+<section id="section4">
+  <div id="content7"></div>
+  <div id="content8"></div>
+</section>
+</main>
+<footer>
+  Edward Lafontant's Newsletter
+</footer>
+
+<script>
+  const contentData = [
+  { image: "plant_based_food1.jpg", title: "Benefits of Leafy Greens", summary: "Learn about the health benefits of leafy greens and how they contribute to longevity..." },
+  { image: "plant_based_food2.jpg", title: "Plant-Based Protein Sources", summary: "Discover the best plant-based protein sources for a healthy diet and longevity..." },
+  { image: "plant_based_food3.jpg", title: "Antioxidant-Rich Foods", summary: "Explore antioxidant-rich foods that promote cellular health and longevity..." },
+  { image: "plant_based_food4.jpg", title: "Healthy Fats for Longevity", summary: "Find out which plant-based fats are good for heart health and longevity..." },
+  { image: "plant_based_food5.jpg", title: "Benefits of Berries", summary: "Discover the powerful antioxidants found in berries and their anti-aging properties..." },
+  { image: "plant_based_food6.jpg", title: "Nutrient-Dense Superfoods", summary: "Learn about nutrient-dense superfoods that support overall health and longevity..." },
+  { image: "plant_based_food7.jpg", title: "Fermented Foods and Gut Health", summary: "Explore the benefits of fermented foods for gut health and longevity..." },
+  { image: "plant_based_food8.jpg", title: "Plant-Based Diet and Longevity", summary: "Discover how a plant-based diet can contribute to a longer, healthier life..." }
+];
+
+
+  function fillContent() {
+    const sections = document.querySelectorAll('section');
+    const contentDivs = document.querySelectorAll('div[id^="content"]');
+
+    contentData.forEach((item, index) => {
+      const contentDiv = contentDivs[index];
+      contentDiv.innerHTML = `
+        <img src="${item.image}" alt="Placeholder Image">
+        <h2>${item.title}</h2>
+        <p>${item.summary}</p>
+      `;
+    });
+  }
+
+  function checkPosition() {
+    const sections = document.querySelectorAll('section');
+
+    sections.forEach(section => {
+      const windowHeight = window.innerHeight;
+      const sectionTop = section.getBoundingClientRect().top;
+      const sectionBottom = section.getBoundingClientRect().bottom;
+
+      if (sectionTop < windowHeight && sectionBottom >= 0) {
+        section.classList.add('fade-in');
+      } else {
+        section.classList.remove('fade-in');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', checkPosition);
+  window.addEventListener('resize', checkPosition);
+  checkPosition(); // Call initially to check sections on page load
+  fillContent(); // Fill content on page load
+</script>
+</body>
+</html>
