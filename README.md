@@ -1,0 +1,1 @@
+In this repository, you will find several websites that are meant to display the various functionalities and website themes that I have been working on. These sites are mainly offline sites and do not require a domain to view. Feel free to copy the code or download the HTML files and open them with your preferred browser. 
